@@ -21,7 +21,7 @@ Unit test and refactoring are processes that go hand in hand with the purpose fo
 
 \section{Introduction}
 
-As Beck \cite{BecAnd04extreme, beck2001planning} explains, testing is one of the most important parts of the discipline Extreme Programming (XP). In his view development is driven by tests, you test first, then you code. When all the tests run, and you can't think of any more tests that would break, you are done adding functionality. He mentions the importance of integration tests that follow immediately the development. Automated test give the possibility to defer the important design decisions as late as possible when the requirements are better understood. Feedback is one of the most important values of XP. Feedback works at different time scales. The programmers write unit tests for all the logic in program that could break. The customers write stories (description of features, simplified use-cases). The testers write functional testes, business functionality for all stories. So the unit tests, written by developers and the functional tests written by customers and testers are the hard of the XP.   
+As Beck \cite{BecAnd04extreme, beck2001planning} explains, testing is one of the most important parts of the discipline Extreme Programming (\textit{XP}). In his view development is driven by tests, you test first, then you code. When all the tests run, and you can't think of any more tests that would break, you are done adding functionality. He mentions the importance of integration tests that follow immediately the development. Automated test give the possibility to defer the important design decisions as late as possible when the requirements are better understood. Feedback is one of the most important values of XP. Feedback works at different time scales. The programmers write unit tests for all the logic in program that could break. The customers write stories (description of features, simplified use-cases). The testers write functional testes, business functionality for all stories. So the unit tests, written by developers and the functional tests written by customers and testers are the hard of the \textit{XP}.   
 
 \begin{definition}
    (Unit Test): Unit Test.
@@ -35,86 +35,81 @@ As Beck \cite{BecAnd04extreme, beck2001planning} explains, testing is one of the
 \section{Unit Test}
 
 \subsection{Unit Test in Detail}
+
 Feather \cite{FeathersMichael} says that the concept of unit test is about the idea that they are tests in isolation of individual software components. But what are components? The definition could vary, but in unit tests we are usually concerned with the most atomic behavioral units of the system. In object oriented code the units are the classes.
 
-\subsection{Are the classes or the modules the support of the behaviour?}
+\subsection{Are the classes or the modules the support of the behavior?}
 
-The TDD was wrong understood and used, says Cooper \cite{WEBSITE:WhereDidItAllGoWrong} 
-Heinemeier Hansson \cite{WEBSITE:TDDisdead} says even that TDD is dead.
+The Test-driven design (\cite{TDD}) was wrong understood and used, says Cooper \cite{WEBSITE:WhereDidItAllGoWrong}. 
+Heinemeier Hansson \cite{WEBSITE:TDDisdead} even says that \textit{TDD} is dead.
 
-test behaviour, 
-	this is the stabil contract of the API, 
-do not test implementation details, 
-	these details can change very rapidly
+\begin{itemize}
+	\item test behavior, this is the stable contract of the \textit{API}, 
+	\item do not test implementation details, these details can change very rapidly
+	\item test the implementation details only when you need to understand the refactoring of the implementation, afterwords delete these tests.
+\end{itemize}
 
-test the implementation details 
-	only when you need to understand the re-factoring of the implementation,
-	afterwords delete these tests.
+The common \textit{TDD} practice by using: 'adding a new method to a class' as the trigger to write a test, is simply wrong. Adding a new class is not the trigger for writing tests. The trigger is implementing a requirement.
+The stable part of the implementation is its public exposed API of the module, this must be tested. Write test to cover the use cases or stories, use the model: \textit{Given}, \textit{When}, \textit{Then}. The subject under test \textit{SUT} is not a class, \textit{SUT} is the export from a module, its facade.
+Unit means a module not a class, modules consist of many classes that constitute the implementation detail.
 
+In Beck \cite{beck2002driven}, is explained, that the object of \textit{TDD} is to test behavior in the system. When it runs in isolation, is the test not a class using mocks to be isolated. The test is isolated not the \textit{SUT}.
+The test are:
+\begin{itemize}
+	\item unit test of the module,
+	\item integration test and
+	\item system test.
+\end{itemize}
 
+If is it difficult to use file system, database, etc., in the unit tests, do not mock them, but fixtures to put your unit tests to use the file system, database, etc. Writing tests that target a method on a class, is not a \textit{TDD} developer test. \textit{TDD} unit tests focus on a story, use-case, scenario, etc. Unit test focusing on method are hard to maintain, these tests do not capture the behavior they want to preserve, detail implementation exposed to unit tests make refactoring difficult. In the \textit{TDD} cycle when you are ready with the implementation, you do not write new unit tests, when refactoring to clean code.
 
-common TDD practice by using: 
-	'adding a new method to a class' 
-	as the trigger to write a test.
+Eliminate the dependency between tests an production code. Tests must not depend on implementation details, because changing the implementation, breaks the tests. Tests must depend on contracts, or public interfaces. This allows for refactor implementation without changing tests. Do not test implementation details, they change quickly. Do not use Mocks to confirm implementation details.
 
-Adding a new class is not the trigger for writing tests.
-The trigger is implementing a requirement.
+Coplien \cite{WEBSITE:UnitTestIsWaste} considers unit tests a waste. He consider to automate:
+\begin{itemize}
+	\item integration tests, 
+	\item bug regression tests and 
+	\item system tests 
+\end{itemize}
+rather than automating unit tests. 
 
-Test the public exposed API of the module under test.
-Write test to cover the use cases or stories, use the model: Given, When, Then
-
-SUT is not a class
-SUT is the export from a module- its facade
-
-Unit means a module not a class
-modules consist of many classes that constitute the implementation detail.
-
-Kent Beck, TDD By Example
-[...] what set of tests, when passed, will demonstrate the presence of code, we are confident, will compute correctly?
-
-the object of TDD ist to test behaviour in the system
-
-Kent Beck whet runs in isolation ist the test not class using mocks to be isolates.
-The test is isolated not the SUT.
-
-unit test of the nodule
-integration test
-system test
-
-use fixtures to put your unit teste to use the file system, database, etc.
-
-Writing tests that target a method on a class, ist not a TDD developer test.
-TDD unit tests focus on a story, use-case, scenario, etc.
-
-unit test focusing on method are hard to maintain, 
-	these tests do not capture the behaviour they want to preserve.
-	
-detail implementation exposed to unit tests make re-factoring difficult	
-
-you do not write new unit teste when re-factoring to clean code.
-
-Eliminate the dependency between tests an production code.
-Teste must not depend on implemenation details because changing the implementation breaks the tests.
-Tests must depend on contracts or public interfaces.
-This allows for re-factor implementation without changing tests.
-Do not teste implementation details, they change quickly.
-
-Do not use Mocks to confirm implementation details
-
-
-Coplien \cite{WEBSITE:UnitTestIsWaste} considers unit tests a waste. His observation is: to automate integration tests, bug regression tests and system tests than by automating unit tests. 
-
-A smarter approach would reduce the test code mass through formal test design: that is, to do formal boundary-condition checking, more white-box testing, and so forth. That requires that the unit under test be designed for testability. This is how hardware engineers do it: designers provide "test points" that can read out values on a J-Tag pin of a chip, to access internal signal values of the chip — tantamount to accessing values between intermediate computations in a computational unit. I advocate doing this at the system level where the testing focus should lie; I have never seen anyone achieve this at the unit level. Without such hooks you are limited to black-box unit testing. 
+A smarter approach would reduce the test code mass through formal test design: that is, to do formal boundary-condition checking, more white-box testing, and so forth. That requires that the unit under test be designed for test-ability. This is how hardware engineers do it: designers provide "test points" that can read out values on a J-Tag pin of a chip, to access internal signal values of the chip — tantamount to accessing values between intermediate computations in a computational unit. I advocate doing this at the system level where the testing focus should lie; I have never seen anyone achieve this at the unit level. Without such hooks you are limited to black-box unit testing. 
 
 Tests should be designed with great care. Business people, rather than programmers, should design most functional tests. Unit tests should be limited to those that can be held up against some “third-party” success criteria.
 
-[...] they had written their tests in such a way that they didn't have to change the tests when the functionality changed. That of course means that the tests  weren't testing the functionality, so whatever they were testing was of little value. Those have no provable value. There were methodologies in the 1970s and 1980s based on traceability that tried to reduce system requirements all the way down to the unit level. In general, that's an NP-hard problem (unless you are doing pure procedural decomposition) so I'm very sceptical of anyone who says they can do that. So one question to ask about every test is: If this test fails, what business requirement is compromised? Most of the time, the answer is, "I don't know." If you don't know the value of the test, then the test theoretically could have zero business value. The test does have a cost: maintenance, computing time, administration, and so forth. That means the test could have net negative value. That is the fourth category of tests to remove. These are tests which, though they may even do some amount of verification, do no validation.
+In Coplien \cite{WEBSITE:UnitTestIsWaste} we find the description of a project in which the developers had written their tests in such a way, that they didn't have to change the tests when the functionality changed. That of course means that the tests  weren't testing the functionality, so whatever they were testing was of little value. Those have no provable value. There were methodologies in the 1970s and 1980s based on trace-ability that tried to reduce system requirements all the way down to the unit level. In general, that's an NP-hard problem (unless you are doing pure procedural decomposition) so I'm very skeptical of anyone who says they can do that. So one question to ask about every test is: If this test fails, what business requirement is compromised? Most of the time, the answer is, "I don't know." If you don't know the value of the test, then the test theoretically could have zero business value. The test does have a cost: maintenance, computing time, administration, and so forth. That means the test could have net negative value. That is the fourth category of tests to remove. These are tests which, though they may even do some amount of verification, do no validation.
+
+In summary: 
+\begin{itemize}
+	\item Keep regression tests around for up to a year — but most of those will be system-level tests rather than unit tests. 
+	\item Keep unit tests that test key algorithms for which there is a broad, formal, independent oracle of correctness, and for which there is ascribable business value.
+	\item  Except for the preceding case, if X has business value and you can test X with either a system test or a unit test, use a system test — context is everything.
+	\item Design a test with more care than you design the code.
+	\item Turn most unit tests into assertions.
+	\item Throw away tests that haven’t failed in a year.
+	\item Testing can’t replace good development: a high test failure 
+rate suggests you should shorten development intervals, 
+perhaps radically, and make sure your architecture and design 
+regimens have teeth
+	\item If you find that individual functions being tested are trivial, 
+double-check the way you incentivize developers’ 
+performance. Rewarding coverage or other meaningless 
+metrics can lead to rapid architecture decay.
+	\item Be humble about what tests can achieve. Tests don’t improve 
+quality: developers do
+\end{itemize}
+
+\subsection{\textit{TDD }and Software Design Quality}
+
+Test-driven development creates software \cite{TestDrivenDevelopmentConceptsTaxonomy} in very short iterations with minimal upfront design. Poised for widespread adoption, TDD has become the focus of an increasing number of researchers and developers.
+
+Support for test-driven development [TDD] is growing in many development contexts beyond its common association with extreme programming.  We \cite{TestDrivenDevelopmentReallyImproveSoftwareDesign} weren't able to confirm claims that TDD improves cohesion while lowering coupling, but we anticipate ways to clarify the questions these design characteristics raised. In particular, we're working to eliminate the confounding factor of accessor usage in the cohesion metrics.
+
+It is suggested \cite{DoesTestDrivenDevelopmentImprovetheProgramCode} that test-driven development (TDD) is one of the most fundamental practices in agile software development, which produces loosely coupled and highly cohesive code. However, how the TDD impacts on the structure of the program code have not been widely studied. This paper presents the results from a comparative case study of five small scale software development projects where the effect of TDD on program design was studied using both traditional and package level metrics. The empirical results reveal that an unwanted side effect can be that some parts of the code may deteriorate. In addition, the differences in the program code, between TDD and the iterative test-last development, were not as clear as expected. This raises the question as to whether the possible benefits of TDD are greater than the possible downsides. Moreover, it additionally questions whether the same benefits could be achieved just by emphasizing unit-level testing activities.
 
 \section{next Section }
 
 Next section
-
-
 
 \subsection{Conclusion}
 
