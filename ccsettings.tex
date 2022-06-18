@@ -1,0 +1,108 @@
+% Try the class options [notes], [notes=only], [trans], [handout],
+% [red], [compress], [draft], [class=article] and see what happens!
+% Copyright 2003 by Till Tantau <tantau@users.sourceforge.net>.
+% For a green structure color use:
+%\colorlet{structure}{green!50!black}
+
+%\mode<article> % only for the article version
+%{
+%  \usepackage{beamerbasearticle}
+%  \usepackage{fullpage}
+%  \usepackage{hyperref}
+%}
+%\includeonlypart{einfuehrung}
+
+\def\setdatum#1{\def\@datum{#1}}
+
+%\beamersetleftmargin{0.5cm}
+%\beamersetrightmargin{0.5cm}
+
+\newcommand{\mybeamertemplatenumberedsubsectiontoc}{
+  \usetemplatetocsection[20!averagebackgroundcolor]
+  {\leavevmode\color{beamerstructure}\inserttocsectionnumber. \inserttocsection\par}
+
+  \usetemplatetocsubsection[20!averagebackgroundcolor]
+    {\leavevmode\leftskip=2em\color{black}\rlap{\hskip-2em\inserttocsectionnumber.\inserttocsubsectionnumber}\inserttocsubsection\par}
+}
+
+% version for presentation
+\mode<beamer>{
+  \usecolortheme{rose}
+  \usepackage{beamerthemeboxes}
+    \useinnertheme{rectangles}
+
+    \setbeamertemplate{itemize items}[default]
+
+  % top left: the title of the presentation
+%   \addheadboxtemplate{\color{structure!100}}{\color{white}\tiny\quad{\inserttitle}}
+  % top right: the current section
+%   \addheadboxtemplate{\color{structure!40}}{\color{white}\tiny\quad \ifthenelse{\value{section}=0}{}{\thesection.} \insertsection }
+
+
+  % bottom left: author name
+%   \addfootboxtemplate{\color{structure!100}}{\tiny\color{white}\quad{\insertauthor}\hskip2.2cm}
+
+  \addfootboxtemplate{\color{structure!100}}{\color{white}\tiny\quad \ifthenelse{\value{section}=0}{}{\thesection.} \insertsection}
+
+%   \addfootboxtemplate{\color{structure!700}}{\tiny\color{white}\quad{\insertauthor}\hskip2.2cm}
+  \addfootboxtemplate{\color{structure!70}}{\color{white}\tiny\quad \ifthenelse{\value{subsection}=0}{}{\thesection.}\ifthenelse{\value{subsection}=0}{}{\thesubsection.} \insertsubsection
+    \hfill (\insertframenumber{} / \inserttotalframenumber{}) \hskip0.3cm}
+%   \addfootboxtemplate{\color{structure!40}}{\hfill\tiny\color{white}
+%     \insertframenumber{} / \inserttotalframenumber{} \hskip0.3cm}
+
+  % give a new command for toc
+  \newcommand{\TableOfContents}{\tableofcontents}
+  %  \beamertemplatetransparentcovered
+  %% R.P.: Tipp von Ingo: Unterdruecke Navigationssymbole
+  %% R.P.: \setbeamertemplate{blocks}[shadow=false]
+  %% R.P.: statt dessen:
+  \setbeamertemplate{navigation symbols}{}
+}
+
+% version for printing
+\mode<handout>{
+  \usepackage{beamerthemeboxes}
+  \colorlet{beamerstructure}{black!50!white}
+  \colorlet{structure}{beamerstructure}
+
+  \mybeamertemplatenumberedsubsectiontoc
+  \newcommand{\TableOfContents}{\tableofcontents}
+
+  \usecolortheme{seagull}
+
+  \usepackage{beamerthemeboxes}
+  \addheadboxtemplate{\color{black!15}}{\color{black}\tiny\quad \inserttitle \tiny\quad \@semester }
+  \addheadboxtemplate{\color{black!10}}{\color{black}\tiny\quad \ifthenelse{\value{section}=0}{}{\thesection.} \insertsection  }
+  \addheadboxtemplate{\color{black!5}}{\color{black}\tiny\quad \ifthenelse{\value{section}=0}{}{\thesection.}\ifthenelse{\value{subsection}=0}{}{\thesubsection.} \insertsubsection}
+  \addfootboxtemplate{\color{black!5}}{\hfill\tiny\color{black}\quad{\insertauthor}\hskip2.2cm}
+  \addfootboxtemplate{\color{black!5}}{\hfill\tiny\color{black}\insertshortdate \hskip1.5cm}
+  \addfootboxtemplate{\color{black!5}}{\hfill\tiny\color{black} Seite \insertpagenumber \hskip0.3cm}
+
+  \beamerboxesdeclarecolorscheme{title}{structure!75!black}{structure!75!black}
+
+    \setbeamertemplate{blocks}[shadow=false]
+    \setbeamercolor{frametitle}{bg=white}
+
+}
+
+\makeatletter
+
+\beamertemplatenumberedsectiontoc
+\mode<handout>{\beamertemplatenavigationsymbolsempty}
+%\beamertemplateroundedblocks
+
+\newcommand{\beamertemplatesetupshadings}{
+  \beamerboxessetupshadows
+  \beamerboxesdeclarecolorscheme{block}{structure!75!black}{structure!10!averagebackgroundcolor}
+  \beamerboxesdeclarecolorscheme{alert}{alert!75!averagebackgroundcolor}{alert!10!averagebackgroundcolor}
+  \beamerboxesdeclarecolorscheme{example}{beamerexample!75!averagebackgroundcolor}{beamerexample!10!averagebackgroundcolor}
+}
+
+
+\setbeamertemplate{itemize subitem}[circle]
+\mybeamertemplatenumberedsubsectiontoc
+
+\titlegraphic{
+\includegraphics[height=6.5mm]{img/scalogo}
+}
+
