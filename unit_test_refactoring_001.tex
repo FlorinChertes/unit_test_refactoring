@@ -5,7 +5,7 @@
 
 \title{unit test and refactoring}
 \date{2022-06-18}
-\author{Dino Madach, Thomas Grim-Schlink and Florin Ioan Chertes}
+\author{Florin Ioan Chertes}
 
 \begin{document}
 
@@ -38,10 +38,40 @@ As Beck \cite{BecAnd04extreme, beck2001planning} explains, testing is one of the
 
 Feather \cite{FeathersMichael} says that the concept of unit test is about the idea that they are tests in isolation of individual software components. But what are components? The definition could vary, but in unit tests we are usually concerned with the most atomic behavioral units of the system. In object oriented code the units are the classes.
 
+
+\subsection{Modern \textit{unit test} concepts}
+
+In \cite{Khoricov2020} unit test are presented:
+
+\begin{definition}
+\begin{itemize}
+Unit tests are automatic tests having the following properties:
+	\item a unit test verifies a single unit of behavior,
+	\item does it quickly and
+	\item does it in isolation from other tests.
+\end{itemize}
+\end{definition}
+
+
+The \textit{isolation issue} is the most disputed. The dispute led to the formation of two schools of unit testing: the classical (Detroit) school, and the London (\textit{mockist}) school. This difference of opinion affects the view of what constitutes a unit and the treatment of the system under test’s (SUT’s) dependencies.
+
+\begin{itemize}
+	\item The London school states that \textit{the units under test} should be isolated from each other. A unit under test is a unit of code, usually a class. All of its dependencies, except immutable dependencies, should be replaced with test doubles in tests.
+	\item The classical school states that \textit{the unit tests} need to be isolated from each other, not \textit{the units under test}. Also, \textit{a unit under test} is a unit of behavior, not a unit of code. Thus, only shared dependencies should be replaced with test doubles. Shared dependencies are dependencies that provide means for tests to affect each others execution flow.
+\end{itemize}
+
+The London school provides the benefits of better granularity, the ease of testing large graphs of interconnected classes, and the ease of finding which functionality contains a bug after a test failure.
+
+The benefits of the London school look appealing at first. However, they introduce several issues. \textit{First}, the focus on classes under test is misplaced: tests should verify units of behavior, not units of code. \textit{Furthermore}, the inability to unit test a piece of code is a strong sign of a problem with the code design. The use of test doubles doesn’t fix this problem, but rather only hides it. And \textit{finally}, while the ease of determining which functionality contains a bug after a test failure is helpful, it’s not that big a deal because you often know what caused the bug anyway—it’s what you edited last.
+
+The biggest issue with the London school of unit testing is the problem of over specification—coupling tests to the SUT’s implementation details.
+
+An integration test is a test that doesn’t meet at least one of the criteria for a unit test. End-to-end tests are a subset of integration tests; they verify the system from the end user’s point of view. End-to-end tests reach out directly to all or almost all out-of-process dependencies your application works with.
+
+
 \subsection{Are the classes or the modules the support of the behavior?}
 
-The Test-driven design (\cite{TDD}) was wrong understood and used, says Cooper \cite{WEBSITE:WhereDidItAllGoWrong}. 
-Heinemeier Hansson \cite{WEBSITE:TDDisdead} even says that \textit{TDD} is dead.
+The Test-driven design \cite{beck2002driven} was wrong understood and used, says Cooper \cite{WEBSITE:WhereDidItAllGoWrong}. Heinemeier Hansson \cite{WEBSITE:TDDisdead} even says that \textit{TDD} is dead.
 
 \begin{itemize}
 	\item test behavior, this is the stable contract of the \textit{API}, 
@@ -99,11 +129,11 @@ metrics can lead to rapid architecture decay.
 quality: developers do
 \end{itemize}
 
-\subsection{\textit{TDD }and Software Design Quality}
+\subsection{\textit{TDD} and Software Design Quality}
 
 Test-driven development creates software \cite{TestDrivenDevelopmentConceptsTaxonomy} in very short iterations with minimal upfront design. Poised for widespread adoption, TDD has become the focus of an increasing number of researchers and developers.
 
-Support for test-driven development [TDD] is growing in many development contexts beyond its common association with extreme programming.  We \cite{TestDrivenDevelopmentReallyImproveSoftwareDesign} weren't able to confirm claims that TDD improves cohesion while lowering coupling, but we anticipate ways to clarify the questions these design characteristics raised. In particular, we're working to eliminate the confounding factor of accessor usage in the cohesion metrics.
+Support for test-driven development (TDD) is growing in many development contexts beyond its common association with extreme programming.  We \cite{TestDrivenDevelopmentReallyImproveSoftwareDesign} weren't able to confirm claims that TDD improves cohesion while lowering coupling, but we anticipate ways to clarify the questions these design characteristics raised. In particular, we're working to eliminate the confounding factor of accessor usage in the cohesion metrics.
 
 It is suggested \cite{DoesTestDrivenDevelopmentImprovetheProgramCode} that test-driven development (TDD) is one of the most fundamental practices in agile software development, which produces loosely coupled and highly cohesive code. However, how the TDD impacts on the structure of the program code have not been widely studied. This paper presents the results from a comparative case study of five small scale software development projects where the effect of TDD on program design was studied using both traditional and package level metrics. The empirical results reveal that an unwanted side effect can be that some parts of the code may deteriorate. In addition, the differences in the program code, between TDD and the iterative test-last development, were not as clear as expected. This raises the question as to whether the possible benefits of TDD are greater than the possible downsides. Moreover, it additionally questions whether the same benefits could be achieved just by emphasizing unit-level testing activities.
 
@@ -111,9 +141,15 @@ It is suggested \cite{DoesTestDrivenDevelopmentImprovetheProgramCode} that test-
 
 Next section
 
-\subsection{Conclusion}
+\subsection{Next section}
+
+
+\section{Conclusion}
 
 Conclusion
+
+
+
 
 \newpage
 
