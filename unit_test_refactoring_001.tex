@@ -3,7 +3,7 @@
 \newtheorem{definition}{Definition}
 \usepackage{graphicx}
 
-\title{unit test and refactoring}
+\title{unit test and refactoring, ideas collected for personal usage}
 \date{2022-06-18}
 \author{Florin Ioan Chertes}
 
@@ -44,7 +44,7 @@ Unit tests are automatic tests having the following properties:
 \end{definition}
 
 
-The \textit{isolation issue} is the most disputed. The dispute led to the formation of two schools of unit testing: the classical (Detroit) school, and the London (\textit{mockist}) school. This difference of opinion affects the view of what constitutes a unit and the treatment of the system under test’s (SUT’s) dependencies.
+The \textit{isolation issue} is the most disputed. The dispute led to the formation of two schools of unit testing: the classical (Detroit) school, and the London (\textit{mockist}) school. This difference of opinion affects the view of what constitutes a unit and the treatment of the system under test’s (\textit{SUT}’s) dependencies.
 
 \begin{itemize}
 	\item The London school states that \textit{the units under test} should be isolated from each other. A unit under test is a unit of code, usually a class. All of its dependencies, except immutable dependencies, should be replaced with test doubles in tests.
@@ -55,7 +55,7 @@ The London school provides the benefits of better granularity, the ease of testi
 
 The benefits of the London school look appealing at first. However, they introduce several issues. \textit{First}, the focus on classes under test is misplaced: tests should verify units of behavior, not units of code. \textit{Furthermore}, the inability to unit test a piece of code is a strong sign of a problem with the code design. The use of test doubles doesn’t fix this problem, but rather only hides it. And \textit{finally}, while the ease of determining which functionality contains a bug after a test failure is helpful, it’s not that big a deal because you often know what caused the bug anyway—it’s what you edited last.
 
-The biggest issue with the London school of unit testing is the problem of over specification—coupling tests to the SUT’s implementation details.
+The biggest issue with the London school of unit testing is the problem of over specification—coupling tests to the \textit{SUT}’s implementation details.
 
 \begin{definition}
 An integration test is a test that doesn’t meet at least one of the criteria for a unit test. 
@@ -77,7 +77,7 @@ The Test-driven design \cite{beck2002driven} was wrong understood and used, says
 \end{itemize}
 
 The common \textit{TDD} practice by using: 'adding a new method to a class' as the trigger to write a test, is simply wrong. Adding a new class is not the trigger for writing tests. The trigger is implementing a requirement.
-The stable part of the implementation is its public exposed API of the module, this must be tested. Write test to cover the use cases or stories, use the model: \textit{Given}, \textit{When}, \textit{Then}. The subject under test \textit{SUT} is not a class, \textit{SUT} is the export from a module, its facade.
+The stable part of the implementation is its public exposed API of the module, this must be tested. Write test to cover the use cases or stories, use the model: \textit{Given}, \textit{When}, \textit{Then}. The subject under test (\textit{SUT}) is not a class, \textit{SUT} is the export from a module, its facade.
 Unit means a module not a class, modules consist of many classes that constitute the implementation detail.
 
 In Beck \cite{beck2002driven}, is explained, that the object of \textit{TDD} is to test behavior in the system. When it runs in isolation, is the test not a class using mocks to be isolated. The test is isolated not the \textit{SUT}.
@@ -90,7 +90,7 @@ The test are:
 
 If is it difficult to use file system, database, etc., in the unit tests, do not mock them, but fixtures to put your unit tests to use the file system, database, etc. Writing tests that target a method on a class, is not a \textit{TDD} developer test. \textit{TDD} unit tests focus on a story, use-case, scenario, etc. Unit test focusing on method are hard to maintain, these tests do not capture the behavior they want to preserve, detail implementation exposed to unit tests make refactoring difficult. In the \textit{TDD} cycle when you are ready with the implementation, you do not write new unit tests, when refactoring to clean code.
 
-Eliminate the dependency between tests an production code. Tests must not depend on implementation details, because changing the implementation, breaks the tests. Tests must depend on contracts, or public interfaces. This allows for refactor implementation without changing tests. Do not test implementation details, they change quickly. Do not use Mocks to confirm implementation details.
+Eliminate the dependency between tests an production code. Tests must not depend on implementation details, because changing the implementation, breaks the tests. Tests must depend on contracts, or public interfaces. This allows for refactor implementation without changing tests. Do not test implementation details, they change quickly. Do not use mocks to confirm implementation details.
 
 Coplien \cite{WEBSITE:UnitTestIsWaste} considers unit tests a waste. He consider to automate:
 \begin{itemize}
@@ -128,25 +128,126 @@ quality: developers do
 
 \subsection{\textit{TDD} and Software Design Quality}
 
-Test-driven development creates software \cite{TestDrivenDevelopmentConceptsTaxonomy} in very short iterations with minimal upfront design. Poised for widespread adoption, TDD has become the focus of an increasing number of researchers and developers.
+Test-driven development (\textit{TDD}) creates software \cite{TestDrivenDevelopmentConceptsTaxonomy} in very short iterations with minimal upfront design. Poised for widespread adoption, \textit{TDD} has become the focus of an increasing number of researchers and developers.
 
-Support for test-driven development (TDD) is growing in many development contexts beyond its common association with extreme programming.  We \cite{TestDrivenDevelopmentReallyImproveSoftwareDesign} weren't able to confirm claims that TDD improves cohesion while lowering coupling, but we anticipate ways to clarify the questions these design characteristics raised. In particular, we're working to eliminate the confounding factor of accessor usage in the cohesion metrics.
+Support for test-driven development, \textit{TDD} is growing in many development contexts beyond its common association with extreme programming.  We \cite{TestDrivenDevelopmentReallyImproveSoftwareDesign} weren't able to confirm claims that\textit{TDD} improves cohesion while lowering coupling, but we anticipate ways to clarify the questions these design characteristics raised. In particular, we're working to eliminate the confounding factor of accessor usage in the cohesion metrics.
 
-It is suggested \cite{DoesTestDrivenDevelopmentImprovetheProgramCode} that test-driven development (TDD) is one of the most fundamental practices in agile software development, which produces loosely coupled and highly cohesive code. However, how the TDD impacts on the structure of the program code have not been widely studied. This paper presents the results from a comparative case study of five small scale software development projects where the effect of TDD on program design was studied using both traditional and package level metrics. The empirical results reveal that an unwanted side effect can be that some parts of the code may deteriorate. In addition, the differences in the program code, between TDD and the iterative test-last development, were not as clear as expected. This raises the question as to whether the possible benefits of TDD are greater than the possible downsides. Moreover, it additionally questions whether the same benefits could be achieved just by emphasizing unit-level testing activities.
+It is suggested \cite{DoesTestDrivenDevelopmentImprovetheProgramCode} that test-driven development, \textit{TDD} is one of the most fundamental practices in agile software development, which produces loosely coupled and highly cohesive code. However, how the \textit{TDD} impacts on the structure of the program code have not been widely studied. This paper presents the results from a comparative case study of five small scale software development projects where the effect of \textit{TDD} on program design was studied using both traditional and package level metrics. The empirical results reveal that an unwanted side effect can be that some parts of the code may deteriorate. In addition, the differences in the program code, between \textit{TDD} and the iterative test-last development, were not as clear as expected. This raises the question as to whether the possible benefits of \textit{TDD} are greater than the possible downsides. Moreover, it additionally questions whether the same benefits could be achieved just by emphasizing unit-level testing activities.
 
-\section{next Section }
+\section{The goal of unit testing }
 
-Next section
+In Khorikov \cite{Khoricov2020} we find that, learning unit testing doesn’t stop at mastering the technical bits of it, such as your favorite test framework, mocking library, and so on. There’s much more to unit testing than the act of writing tests. You always have to strive to achieve the
+best return on the time you invest in unit testing, minimizing the effort you put into tests and maximizing the benefits they provide. Achieving both things isn’t an easy task.
 
-\subsection{Next subsection}
+\subsection{The current state of unit testing}
+For the past two decades, there’s been a push toward adopting unit testing. The push has been so successful that unit testing is now considered mandatory in most companies. Most programmers practice unit testing and understand its importance. There’s no longer any dispute as to whether you should do it. Unless you’re working on a throwaway project, the answer is, yes, you do.
 
-Next subsection
+\subsection{ The goal of unit testing}
+The goal is to enable sustainable growth of the software project. The term sustainable is key. It’s quite easy to grow a project, especially when you start from scratch. It’s much harder to sustain this growth over time.
+
+In software, entropy manifests in the form of code that tends to deteriorate. Each time you change something in a code base, the amount of disorder in it, or entropy, increases. If left without proper care, such as constant cleaning and refactoring, the system becomes increasingly complex and disorganized. Fixing one bug introduces more bugs, and modifying one part of the software breaks several others—it’s like a domino effect. Eventually, the code base becomes unreliable. And worst of all, it’s hard to bring it back to stability.
+
+\begin{definition}
+A \textbf{regression} \cite{regression_testing_in_practice} is when a feature stops working as intended after a certain event (usually, a code modification). The terms \textbf{regression} and \textbf{software bug} are synonyms and can be used interchangeably.
+\end{definition}
+
+\subsection{What makes a good or bad test?}
+Although unit testing helps maintain project growth, it’s not enough to just write tests. 
+Remember, \textit{not all tests are created equal}. Some of them are valuable and contribute a lot to overall software quality. Others don’t. They raise false alarms, don’t help you catch regression errors, and are slow and difficult to maintain. It’s easy to fall into the trap of writing unit tests for the sake of unit testing without a clear picture of whether it
+helps the project.
+
+\subsubsection{Production code vs. test code}
+People often think production code and test code are different. Tests are assumed to be an addition to production code and have no cost of ownership. By extension, people often believe that the more tests, the better. This isn’t the case. \textbf{Code is a liability, not an asset}. The more code you introduce, the more you extend the surface area for potential bugs in your software, and the higher the project’s upkeep cost. It’s always better to solve problems with as little code as possible. Tests are code, too. You should view them as the part of your code base that aims at solving a particular problem: ensuring the application’s correctness. \textbf{Unit tests, just like any other code, are also vulnerable to bugs and require maintenance}.
+
+\subsection{What makes a successful test suite?}
+
+\begin{definition}
+A successful test suite has the following properties:
+\begin{itemize}
+	\item It’s integrated into the development cycle.
+	\item It targets only the most important parts of your code base.
+	\item It provides maximum value with minimum maintenance costs.
+\end{itemize}
+\end{definition}
+
+ It’s important to \textbf{direct your unit testing efforts to the most critical parts of the system} and verify the others only briefly or indirectly. In most applications, the most important part is the part that contains business logic—the \textit{domain model}, Evans \cite{evans2004} .  Testing business logic gives you the best return on your time investment.
+
+\subsection{It provides maximum value with minimum maintenance costs}
+The most difficult part of unit testing is achieving maximum value with minimum maintenance costs.
+It’s not enough to incorporate tests into a build system, and it’s not enough to maintain high test coverage of the domain model. It’s also crucial to keep in the suite only the tests whose value exceeds their upkeep costs by a good margin.
+
+This last attribute can be divided in two:
+\begin{itemize}
+	\item Recognizing a valuable test (and, by extension, a test of low value)
+	\item Writing a valuable test
+\end{itemize}
+
+Although these skills may seem similar, they’re different by nature. To recognize a test of high value, you need a frame of reference. On the other hand, writing a valuable test requires you to also know code design techniques. Unit tests and the underlying code are highly intertwined, and it’s impossible to create valuable tests without putting significant effort into the code base they cover. 
+
+You can view it as the difference between recognizing a good song and being able to compose one. The amount of effort required to become a composer is asymmetrically larger than the effort required to differentiate between good and bad music. The same is true for unit tests. Writing a new test requires more effort than examining an existing one, mostly because you don’t write tests in a vacuum: you have to take into account the underlying code.
+
+\section{What is a unit test?}
+
+\subsection{The definition of “unit test”}
+
+\begin{definition}
+\begin{itemize}
+Unit tests are automatic tests having the following properties:
+	\item a unit test verifies a single unit of behavior,
+	\item does it quickly and
+	\item does it in isolation from other tests.
+\end{itemize}
+\end{definition}
+
+What people have vastly different opinions about is the third attribute. The isolation issue is the root of the differences between the \textit{classical}, Detroit and London, \textit{mockist} schools of
+unit testing.
+
+\subsection{ The isolation issue: The London take}
+
+What does it mean to verify a piece of code—a unit—in an isolated manner? The London school describes it as isolating the system under test from its collaborators. It means if a class has a dependency on another class, or several classes, you need to replace all such dependencies with test \textit{doubles}. This way, you can focus on the class under test exclusively by separating its behavior from any external influence.
+
+\begin{definition}
+A \textbf{test double} is an object that looks and behaves like its release-intended counterpart but is actually a simplified version that reduces the complexity and facilitates testing. This term was introduced by Meszaros \cite{Meszaros07}. The name itself comes from the notion of a stunt double in movies.
+\end{definition}
+
+One benefit of this approach is that if the test fails, you know for sure which part of the code base is broken: it’s the system under test. There could be no other suspects, because all of the class’s neighbors are replaced with the test doubles.
+
+Another benefit is the ability to split the object graph—the web of communicating classes solving the same problem. This web may become quite complicated: every class in it may have several immediate dependencies, each of which relies on dependencies of their own, and so on. Classes may even introduce circular dependencies, where the chain of dependency eventually comes back to where it started.
+
+With test doubles, you can put a stop to this. You can substitute the immediate dependencies of a class; and, by extension, you don’t have to deal with the dependencies of those dependencies, and so on down the recursion path. You are effectively breaking up the graph—and that can significantly reduce the amount of preparations you have to do in a unit test.
+
+\begin{definition}
+A mock is a special kind of test double that allows you to examine interactions between the system under test and its collaborators.
+\end{definition}
+
+\subsection{The isolation issue: The classical take}
+How small should a small piece of code be? As you saw from the previous section, if you adopt the position of isolating every individual class, then it’s natural to accept that the piece of code under test should also be a single class, or a method inside that class. 
+
+In the classical approach, it’s not the code that needs to be tested in an isolated manner. Instead, unit tests themselves should be run in isolation from each other. That way, you can run the tests in parallel, sequentially, and in any order, whatever fits you best, and they still won’t affect each others outcome.
+
+Isolating tests from each other means it’s fine to exercise several classes at once as long as they all reside in the memory and don’t reach out to a shared state, through which the tests can communicate and affect each others execution context. Typical examples of such a shared state are out-of-process dependencies—the database, the file system, and so on.
+
+\begin{definition}
+A \textbf{shared dependency} is a dependency that is shared between tests and provides means for those tests to affect each others outcome. 
+\begin{itemize}
+	\item A typical example of shared dependencies is a static mutable field. A change to such a field is visible across all unit tests running within the same process. 
+	\item A database is another typical example of a shared dependency.
+\end{itemize}
+\end{definition}
+
+\begin{definition}
+A \textbf{private dependency} is a dependency that is not shared.
+\end{definition}
+
+\begin{definition}
+An \textbf{out-of-process dependency} is a dependency that runs outside the application’s execution process; it’s a proxy to data that is not yet in the memory. 
+\end{definition}
+
+ An out-of-process dependency corresponds to a shared dependency in the vast majority of cases, but not always. For example, a database is both out-of-process and shared. But if you launch that database in a Docker container before each test run, that would make this dependency out-of-process but not shared, since tests no longer work with the same instance of it. Similarly, a read-only database is also out-of-process but not shared, even if it’s reused by tests. Tests can’t mutate data in such a database and thus can’t affect each others outcome.
 
 \section{Conclusion}
 
 Conclusion
-
-
 
 
 \newpage
