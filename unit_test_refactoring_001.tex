@@ -202,7 +202,7 @@ Unit tests are automatic tests having the following properties:
 What people have vastly different opinions about is the third attribute. The isolation issue is the root of the differences between the \textit{classical}, Detroit and London, \textit{mockist} schools of
 unit testing.
 
-\subsection{ The isolation issue: The London take}
+\subsubsection{The isolation issue: The London take}
 
 What does it mean to verify a piece of code—a unit—in an isolated manner? The London school describes it as isolating the system under test from its collaborators. It means if a class has a dependency on another class, or several classes, you need to replace all such dependencies with test \textit{doubles}. This way, you can focus on the class under test exclusively by separating its behavior from any external influence.
 
@@ -220,7 +220,7 @@ With test doubles, you can put a stop to this. You can substitute the immediate 
 A mock is a special kind of test double that allows you to examine interactions between the system under test and its collaborators.
 \end{definition}
 
-\subsection{The isolation issue: The classical take}
+\subsubsection{The isolation issue: The classical take}
 How small should a small piece of code be? As you saw from the previous section, if you adopt the position of isolating every individual class, then it’s natural to accept that the piece of code under test should also be a single class, or a method inside that class. 
 
 In the classical approach, it’s not the code that needs to be tested in an isolated manner. Instead, unit tests themselves should be run in isolation from each other. That way, you can run the tests in parallel, sequentially, and in any order, whatever fits you best, and they still won’t affect each others outcome.
@@ -244,6 +244,30 @@ An \textbf{out-of-process dependency} is a dependency that runs outside the appl
 \end{definition}
 
  An out-of-process dependency corresponds to a shared dependency in the vast majority of cases, but not always. For example, a database is both out-of-process and shared. But if you launch that database in a Docker container before each test run, that would make this dependency out-of-process but not shared, since tests no longer work with the same instance of it. Similarly, a read-only database is also out-of-process but not shared, even if it’s reused by tests. Tests can’t mutate data in such a database and thus can’t affect each others outcome.
+
+Note that shared dependencies are shared between unit tests, not \textit{between} classes under test (units). In that sense, a \textbf{singleton dependency} is not shared as long as you are able to create a new instance of it in each test. While there’s only one instance of a singleton in the production code, tests may very well not follow this pattern and not reuse that singleton. Thus, such a dependency would be private.
+
+You can't create a new file system or a database, however; they must be either
+\begin{itemize}
+	\item shared between tests or
+	\item substituted away with test doubles.
+\end{itemize}
+
+Another reason for substituting shared dependencies is to increase the test execution speed.
+
+\subsection{The classical and London schools of unit testing}
+
+ The London school views it as isolation of the system under test from its collaborators, whereas the classical school views it as isolation of unit tests themselves from each other.  This seemingly minor difference has led to a vast disagreement about how to approach unit testing, which, as you already know, produced the two schools of thought. Overall, the disagreement between the schools spans three major topics:
+\begin{itemize}
+	\item The isolation requirement
+	\item What constitutes a piece of code under test (a unit)
+	\item Handling dependencies
+\end{itemize}
+
+
+
+
+
 
 \section{Conclusion}
 
