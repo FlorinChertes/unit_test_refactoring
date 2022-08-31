@@ -328,6 +328,53 @@ An integration test is a test that verifies that your code works in integration 
 End-to-end tests are a subset of integration tests. They, too, check to see how your code works with out-of-process dependencies. The difference between an end-to-end test and an integration test is that end-to-end tests usually include more of such dependencies.
 \end{definition}
 
+\section{The four pillars of a good unit test}
+
+\subsection{Diving into the four pillars of a good unit test}
+
+A good unit test has the following four attributes:
+\begin{itemize}
+	\item Protection against regressions
+	\item Resistance to refactoring
+	\item Fast feedback
+	\item Maintainability
+\end{itemize}
+
+\subsubsection{The first pillar: Protection against regressions}
+
+\begin{definition}
+A \textbf{regression} \cite{regression_testing_in_practice} is a software bug. It’s when a feature stops working as intended after some code modification, usually after you roll out new functionality.
+\end{definition}
+
+\begin{theorem}
+An unfortunate fact of programming life is that \textbf{code is not an asset, it’s a liability}. The larger the code base, the more exposure it has to potential bugs.
+\end{theorem}
+
+To evaluate how well a test scores on the metric of protecting against regressions, you need to take into account the following:
+\begin{itemize}
+	\item The amount of code that is executed during the test
+	\item The complexity of that code
+	\item The code’s domain significance
+\end{itemize}	
+Generally, the larger the amount of code that gets executed, the higher the chance that the test will reveal a regression. 
+Code that represents complex business logic is more important than boilerplate code—bugs in business-critical functionality are the most damaging. It’s rarely worthwhile to test trivial code. Such code is short and doesn’t contain a substantial amount of business logic. Tests that cover trivial code don’t have much of a chance of finding a regression error, because there’s not a lot of room for a mistake.
+
+\begin{theorem}
+To maximize the metric of protection against regressions, the test needs to aim at exercising as much code as possible. 
+\end{theorem}
+
+\subsubsection{The second pillar: Resistance to refactoring}
+\begin{definition}
+\textbf{resistance to refactoring} is the degree to which a test can sustain a refactoring of the underlying application code without turning red (failing).
+\end{definition}
+
+A \textit{false positive} is a false alarm. This situation occurs when after refactoring everything looks even better than before, but the test is failing. You look more closely to see exactly what you broke with the refactoring, but it turns out that you didn’t break anything. The feature works perfectly, just as before. The problem is that the tests are written in such a way that they turn red with any modification of the underlying code. And they do that regardless of whether you actually break the functionality itself.
+
+Such false positives usually take place when you refactor the code—when you modify the implementation, but keep the observable behavior intact. Hence the name for this attribute of a good unit test: \textit{resistance to refactoring}.
+
+
+\subsubsection{What causes false positives?}
+The number of false positives a test produces is directly related to the way the test is structured. The more the test is coupled to the implementation details of the system under test (\textit{SUT}), the more false alarms it generates. The only way to reduce the chance of getting a false positive is to decouple the test from those implementation details. You need to make sure the test verifies the end result the \textit{SUT} delivers: its observable behavior, not the steps it takes to do that. 
 
 \section{Conclusion}
 
