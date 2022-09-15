@@ -4,6 +4,7 @@
 \newtheorem{theorem}{Theorem}
 
 \usepackage{graphicx}
+\usepackage{float}
 
 \title{unit test and refactoring, ideas collected for personal usage}
 \date{2022-06-18}
@@ -372,9 +373,213 @@ A \textit{false positive} is a false alarm. This situation occurs when after ref
 
 Such false positives usually take place when you refactor the code—when you modify the implementation, but keep the observable behavior intact. Hence the name for this attribute of a good unit test: \textit{resistance to refactoring}.
 
-
 \subsubsection{What causes false positives?}
-The number of false positives a test produces is directly related to the way the test is structured. The more the test is coupled to the implementation details of the system under test (\textit{SUT}), the more false alarms it generates. The only way to reduce the chance of getting a false positive is to decouple the test from those implementation details. You need to make sure the test verifies the end result the \textit{SUT} delivers: its observable behavior, not the steps it takes to do that. 
+The number of false positives a test produces is directly related to the way the test is structured. The more the test is coupled to the implementation details of the system under test (\textit{SUT}), the more false alarms it generates.  
+
+\begin{theorem}
+The only way to reduce the chance of getting a false positive is to decouple the test from those implementation details. You need to make sure the test verifies the end result the \textit{SUT} delivers: its \textbf{observable behavior, not the steps} it takes to do that.
+\end{theorem}
+
+\subsection{The intrinsic connection between the first two attributes}
+There’s an intrinsic connection between the first two pillars of a good unit test:
+
+\begin{itemize}
+	\item \textit{protection against regressions} and 
+	\item \textit{resistance to refactoring}.
+\end{itemize}	
+
+They both contribute to the accuracy of the test suite, though from opposite perspectives. These two attributes also tend to influence the project differently over time: while it’s important to have good protection against regressions very soon after the project’s initiation, the need for resistance to refactoring is not immediate.
+
+When the test doesn’t catch an error, that’s a problem, a \textit{false negative}. And this is what the first attribute of a good test—\textit{protection against regressions}—helps you avoid. Tests with a good \textit{protection against regressions} help you to minimize the number of false negatives.
+
+On the other hand, there’s a symmetric situation when the functionality is correct but the test still shows a failure. This is a \textit{false positive}, a false alarm. And this is what the second attribute—\textit{resistance to refactoring}—helps you with.
+
+The accuracy metric itself consists of two components:
+
+\begin{itemize}
+	\item How good the test is at indicating the presence of bugs (lack of false negatives, the sphere of \textit{protection against regressions}) 
+	\item How good the test is at indicating the absence of bugs (lack of false positives, the sphere of \textit{resistance to refactoring})
+\end{itemize}	
+
+\begin{theorem}
+In order to be valuable, the test needs to score at least something in all four categories.
+\end{theorem}
+
+Remember, all code, including test code, is a liability. Set a fairly high threshold for the minimum required value, and only allow tests in the suite if they meet this threshold. A small number of highly valuable tests will do a much better job sustaining project growth than a large number of mediocre tests.
+
+End-to-end tests exercise a lot of code, they provide the best protection against regressions.
+
+End-to-end tests are also immune to false positives and thus have a good resistance to refactoring.
+
+However, despite these benefits, end-to-end tests have a major drawback: they are slow. Any system that relies solely on such tests would have a hard time getting rapid feedback. 
+
+\section{Mocks and test fragility}
+
+The use of mocks in tests is a controversial subject. Some people argue that mocks are a great tool and apply them in most of their tests. Others claim that mocks lead to test fragility and try not to use them at all. As the saying goes, the truth lies somewhere in between. Mocks often result in fragile tests—tests that lack the metric of resistance to refactoring. But there are still cases where mocking is applicable and even preferable.
+
+\subsection{Differentiating mocks from stubs}
+
+There are two types of test doubles, that that allows for examine interactions between the system under test (\textit{SUT}) and its collaborators. : \textit{mocks} and \textit{stubs}.
+
+\subsubsection{The types of test doubles}
+
+According to Gerard Meszaros, there are five variations of test doubles: \textit{dummy, stub, spy, mock, and fake}. Such a variety can look intimidating, but in reality, they can all be grouped together into just two types: mocks and stubs.
+
+The difference between these two types boils down to the following: 
+\begin{itemize}
+	\item Mocks help to emulate and examine outcoming interactions. These interactions are calls the SUT makes to its dependencies to change their state.
+	\item Stubs help to emulate incoming interactions. These interactions are calls the SUT makes to its dependencies to get input data.
+\end{itemize}
+
+\begin{theorem}
+Asserting interactions with stubs is a common anti-pattern that leads to fragile tests.
+\end{theorem}
+
+The only way to avoid false positives and thus improve resistance to refactoring in tests is to make those tests verify the end result (which, ideally, should be meaningful to a non-programmer), not implementation details.
+
+\subsubsection{How mocks and stubs relate to commands and queries}
+
+Test doubles that substitute commands become mocks. Similarly, test doubles that substitute queries are stubs. 
+
+\subsection{Observable behavior vs. implementation details}
+The metric of resistance to refactoring is the most important because whether a unit test possesses this metric is mostly a binary choice. 
+
+The main reason tests deliver false positives (and thus fail at resistance to refactoring) is because they couple to the code’s implementation details. The only way to avoid such coupling is to verify the end result the code produces (its observable behavior) and distance tests from implementation details as much as possible. In other words, tests must focus on the \textit{whats}, not the \textit{hows}. So, what exactly is an implementation detail, and how is it different from an observable behavior?
+
+For a piece of code to be part of the system’s observable behavior, it has to do one of the following things:
+
+\begin{itemize}
+	\item Expose an operation that helps the client achieve one of its goals. An operation is
+a method that performs a calculation or incurs a side effect or both.
+	\item Expose a state that helps the client achieve one of its goals. State is the current
+condition of the system.
+\end{itemize}
+
+Ideally, the system’s public API surface should coincide with its observable behavior, and all its implementation details should be hidden from the eyes of the clients. Such a system has a well-designed API
+
+\subsection{The classical vs. London schools of unit testing, revisited}
+
+The indiscriminate use of mocks is why following the London school often results
+in tests that couple to implementation details and thus lack resistance to refactoring.
+The metric of resistance to refactoring (unlike the other three) is mostly a binary choice: a test either has resistance to refactoring or it doesn’t. Compromising on this metric renders the test nearly worthless.
+
+\section{Styles of unit testing}
+
+\subsection{The three styles of unit testing}
+
+
+There are three such \textit{unit test styles}:
+\begin{itemize}
+	\item output-based,
+	\item state-based and
+	\item	 communication based testing.
+\end{itemize}
+Among the three, the \textit{output-based} style produces tests of the highest
+quality, \textit{state-based} testing is the second-best choice, and \textit{communication-based}
+testing should be used only occasionally.
+
+\subsubsection{Defining the output-based style}
+
+\begin{definition}
+The \textbf{output-based} style, where you feed an input to the system under test (SUT) and check the output it produces. This style of unit testing is only applicable to code that doesn’t change a global or internal state, so the only component to verify is its return value.
+\end{definition}
+
+\begin{definition}
+The \textit{output-based} style of unit testing is also known as \textbf{functional}.
+\end{definition}
+
+
+\subsubsection{Defining the state-based style}
+
+\begin{definition}
+The \textbf{state-based} style is about verifying the state of the system after an operation is complete. The term state in this style of testing can refer to the state of the SUT itself, of one of its collaborators, or of an out-of-process dependency, such as the database or the file-system.
+\end{definition}
+
+\subsubsection{Defining the communication-based style}
+
+\begin{definition}
+The  style of unit testing called \textbf{communication-based} testing uses mocks to verify communications between the system under test and its collaborators.
+\end{definition}
+
+\subsection{Comparing the three styles of unit testing}
+\subsubsection{Comparing the styles using the metrics of protection against regressions and feedback speed}
+
+The metric of protection against regressions doesn’t depend on a particular style of testing. This metric is a product of the following three characteristics:
+\begin{itemize}
+	\item the amount of code that is executed during the test,
+	\item the complexity of that code and
+	\item	 its domain significance.
+\end{itemize}
+Generally, you can write a test that exercises as much or as little code as you like; no particular style provides a benefit in this area. The same is true for the code’s complexity and domain significance.
+
+The only exception is the communication-based style: overusing it can result in shallow tests that verify only a thin slice of code and mock out everything else. Such shallowness is not a definitive feature of communication based testing, though, but rather is an extreme case of abusing this technique.
+
+\subsubsection{Comparing the styles using the metric of resistance to refactoring}
+
+When it comes to the metric of resistance to refactoring, the situation is different. Resistance to refactoring is the measure of how many false positives (false alarms) tests generate during refactorings. False positives, in turn, are a result of tests coupling to code’s implementation details as opposed to observable behavior.
+
+\begin{theorem}
+\textit{Output-based testing} provides the best protection against false positives because the resulting tests couple only to the method under test. The only way for such tests to couple to implementation details is when the method under test is itself an implementation detail.
+\end{theorem}
+
+State-based testing is usually more prone to false positives.  Communication-based testing is the most vulnerable to false alarms.
+
+Mocks are fine only when they verify interactions that cross the application boundary and only when the side effects of those interactions are visible to the external world.
+
+You can reduce the number of false positives to a minimum by maintaining proper encapsulation and coupling tests to observable behavior only.
+
+\section{Refactoring toward valuable unit tests}
+
+\subsection{Identifying the code to refactor}
+It’s rarely possible to significantly improve a test suite without refactoring the underlying code. There’s no way around it—test and production code are intrinsically connected.
+
+\subsubsection{The four types of code}
+All production code can be categorized along two dimensions:
+\begin{itemize}
+	\item complexity or domain significance and
+	\item the number of collaborators.
+\end{itemize}
+
+\begin{definition}
+\textbf{Code complexity} is defined by the number of decision-making (branching) points in the code. The greater that number, the higher the complexity.
+\end{definition}
+
+\begin{definition}
+\textbf{Domain significance} shows how significant the code is for the problem domain of your project. Normally, all code in the domain layer has a direct connection to the end users’ goals and thus exhibits a high domain significance. On the other hand, utility code doesn’t have such a connection.
+\end{definition}
+
+Complex code and code that has domain significance benefit from unit testing the most because the corresponding tests have great protection against regressions.
+
+The second dimension is the number of collaborators a class or a method has. A collaborator is a dependency that is either mutable or out-of-process (or both). Code with a large number of collaborators is expensive to test. That’s due to the maintainability metric, which depends on the size of the test. It takes space to bring collaborators to an expected condition and then check their state or interactions with them afterward. And the more collaborators there are, the larger the test becomes.
+
+Use mocks to verify interactions that cross the application boundary in order to maintain proper resistance to refactoring. 
+
+The combination of code complexity, its domain significance, and the number of collaborators give us the four types of code:
+\begin{itemize}
+	\item domain model and algorithms,
+	\item trivial code,
+	\item controllers and
+	\item over complicated code.	
+\end{itemize}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=1.0\textwidth]{img/code_types}
+  \caption{The four types of code, categorized by code complexity and domain significance (the vertical axis) and the number of collaborators (the horizontal axis).}
+  \label{fig:four_code_types}
+\end{figure}
+
+Unit testing the top-left quadrant from Fig.\ref{fig:four_code_types} (domain model and algorithms) gives you the best return for your efforts. The resulting unit tests are highly valuable and cheap. They’re valuable because the underlying code carries out complex or important logic, thus increasing tests’ protection against regressions. And they’re cheap because the code has few collaborators (ideally, none), thus decreasing tests’ maintenance costs.
+
+Trivial code shouldn’t be tested at all; such tests have a close-to-zero value. As for controllers, you should test them briefly as part of a much smaller set of the overarching integration tests.
+
+The most problematic type of code is the over complicated quadrant. It’s hard to unit test but too risky to leave without test coverage. Such code is one of the main reasons many people struggle with unit testing. This whole chapter is primarily devoted to how you can bypass this dilemma. The general idea is to split over complicated code into two parts: algorithms and controllers.
+
+\begin{theorem}
+The more important or complex the code, the fewer collaborators it should have.
+\end{theorem}
+
+Getting rid of the over complicated code and unit testing only the domain model and algorithms is the path to a highly valuable, easily maintainable test suite. With this approach, you won’t have 100\% test coverage, but you don’t need to—100\% coverage shouldn’t ever be your goal. Your goal is a test suite where each test adds significant value to the project. Refactor or get rid of all other tests. Don’t allow them to inflate the size of your test suite.
 
 \section{Conclusion}
 
