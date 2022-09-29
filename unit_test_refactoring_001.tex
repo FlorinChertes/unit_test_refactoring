@@ -145,7 +145,7 @@ best return on the time you invest in unit testing, minimizing the effort you pu
 \subsection{The current state of unit testing}
 For the past two decades, there’s been a push toward adopting unit testing. The push has been so successful that unit testing is now considered mandatory in most companies. Most programmers practice unit testing and understand its importance. There’s no longer any dispute as to whether you should do it. Unless you’re working on a throwaway project, the answer is, yes, you do.
 
-\subsection{ The goal of unit testing}
+\subsection{The goal of unit testing}
 The goal is to enable sustainable growth of the software project. The term sustainable is key. It’s quite easy to grow a project, especially when you start from scratch. It’s much harder to sustain this growth over time.
 
 In software, entropy manifests in the form of code that tends to deteriorate. Each time you change something in a code base, the amount of disorder in it, or entropy, increases. If left without proper care, such as constant cleaning and refactoring, the system becomes increasingly complex and disorganized. Fixing one bug introduces more bugs, and modifying one part of the software breaks several others—it’s like a domino effect. Eventually, the code base becomes unreliable. And worst of all, it’s hard to bring it back to stability.
@@ -153,6 +153,10 @@ In software, entropy manifests in the form of code that tends to deteriorate. Ea
 \begin{definition}
 A \textbf{regression} \cite{regression_testing_in_practice} is when a feature stops working as intended after a certain event (usually, a code modification). The terms \textbf{regression} and \textbf{software bug} are synonyms and can be used interchangeably.
 \end{definition}
+
+
+\subsection{Using coverage metrics to measure test suite quality}
+
 
 \subsection{What makes a good or bad test?}
 Although unit testing helps maintain project growth, it’s not enough to just write tests. 
@@ -580,6 +584,104 @@ The more important or complex the code, the fewer collaborators it should have.
 \end{theorem}
 
 Getting rid of the over complicated code and unit testing only the domain model and algorithms is the path to a highly valuable, easily maintainable test suite. With this approach, you won’t have 100\% test coverage, but you don’t need to—100\% coverage shouldn’t ever be your goal. Your goal is a test suite where each test adds significant value to the project. Refactor or get rid of all other tests. Don’t allow them to inflate the size of your test suite.
+
+\subsubsection{Using the Humble Object pattern to split over complicated code}
+
+To split over complicated code, you need to use the \textbf{Humble Object design pattern}. This pattern was introduced Meszaros \cite{Meszaros07} as one of the ways to battle code coupling, but it has a much broader application.
+
+We often find that code is hard to test because it’s coupled to a framework dependency. Examples include asynchronous or multi-threaded execution, user interfaces, communication with out-of-process dependencies, and so on.
+
+\begin{definition}
+To bring the logic of this code under test, you need to extract a testable part out of it. As a result, the code becomes a thin, humble wrapper around that testable part: it glues the hard-to-test dependency and the newly extracted component together, but itself contains little or no logic and thus doesn’t need to be tested.
+\end{definition}
+
+In fact, both hexagonal and functional architectures implement this exact pattern. The hexagonal architecture advocates for the separation of business logic and communications with out-of-process dependencies. Functional architecture goes even further and separates business logic from communications with all collaborators, not just out-of-process ones. 
+
+\begin{theorem}
+The separation of business logic and orchestration must be our target. You can think of these two responsibilities in terms of code depth versus code width. Your code can be either:
+\begin{itemize}
+	\item deep (complex or important) or,
+	\item wide (work with many collaborators),
+\end{itemize}
+but never both.
+\end{theorem}
+
+\section{Integration testing}
+
+\subsection{Integration testing}
+
+\begin{definition}
+An integration test then is any test that is not a unit test. integration tests almost always verify how your system works in integration with out-of-process dependencies.
+\end{definition}
+
+
+\begin{definition}
+A \textbf{happy path} is a successful execution of a business scenario. An \textbf{edge case} is when the business scenario execution results in an error.
+\end{definition}
+
+The ratio between unit and integration tests can differ depending on the project’s specifics, but the general rule of thumb is the following.
+\begin{theorem}
+Use \textbf{unit tests} to check as many of the business scenario’s \textbf{edge cases} as possible; 
+use  \textbf{integration tests} to cover:
+\begin{itemize}
+	\item  one \textbf{happy path}, 
+	\item  as well as any \textbf{edge cases} that can’t be covered by \textbf{unit tests}.
+\end{itemize}
+\end{theorem}
+
+\subsubsection{Integration testing vs. failing fast}
+
+\begin{theorem}
+It’s better to not write a test at all, than to write a bad test. A test that doesn’t provide significant value is a bad test.
+\end{theorem}
+
+\textbf{The Fail Fast principle}
+
+\begin{definition}
+The Fail Fast Principle stands for stopping the current operation as soon as any unexpected error occurs. This principle makes your application more stable as follows.
+
+\begin{itemize}
+	\item  Shortening the feedback loop—The sooner you detect a bug, the easier it is to fix. 
+	\item  Protecting the persistence state—Bugs lead to corruption of the application’s state.
+\end{itemize}
+\end{definition}
+
+Stopping the current operation is normally done by throwing exceptions, because exceptions have semantics that are perfectly suited for the Fail Fast Principle: they interrupt the program flow and pop up to the highest level of the execution stack, where you can log them and shut down or restart the operation.
+
+Preconditions are one example of the Fail Fast Principle in action. A failing precondition signifies an incorrect assumption made about the application state, which is always a bug. 
+
+\subsection{ Which out-of-process dependencies to test directly}
+
+Integration tests verify how your system integrates with out-of-process dependencies. There are two ways to implement such verification: use the real out-of-process dependency, or replace that dependency with a mock. 
+
+\subsubsection{The two types of out-of-process dependencies}
+
+All out-of-process dependencies fall into two categories:
+\begin{itemize}
+	\item  Managed dependencies (out-of-process dependencies you have full control over)—These dependencies are only accessible through your application; interactions with them aren’t visible to the external world. A typical example is a database. External systems normally don’t access your database directly; they do that through
+the API your application provides.
+	\item Unmanaged dependencies (out-of-process dependencies you don’t have full control over)— Interactions with such dependencies are observable externally. Examples include an SMTP server and a message bus: both produce side effects visible to other
+applications.
+\end{itemize}
+
+\begin{theorem}
+Use real instances of managed dependencies; replace unmanaged dependencies with mocks.
+\end{theorem}
+
+Should you mock out the database anyway, despite it being a managed dependency? No, because mocking out a managed dependency compromises the integration tests’ resistance to refactoring.
+
+If you can’t test the database as-is, don’t write integration tests at all, and instead, focus exclusively on unit testing of the domain model. Remember to always put all your tests under close scrutiny. Tests that don’t provide a high enough value should have no place in your test suite.
+
+\section{Mocking best practices}
+
+\begin{definition}
+A mock is a test double that helps to emulate and examine interactions between the system under test.
+\end{definition}
+
+\begin{theorem}
+Mocks should only be applied to unmanaged dependencies (interactions with such dependencies are observable by external applications). Using mocks for anything else results in brittle tests (tests that lack the metric of resistance to refactoring). When it comes to mocks, adhering to this one guideline will get you about two-thirds of the way to success.
+\end{theorem}
+
 
 \section{Conclusion}
 
